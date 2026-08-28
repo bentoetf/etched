@@ -28,13 +28,18 @@ function ago(ts: number): string {
 }
 
 function demoEntries(): Entry[] {
+  const dims = [
+    [400, 400], [400, 300], [300, 400], [400, 500], [500, 300],
+    [400, 260], [320, 400], [400, 400], [450, 300], [300, 360],
+    [400, 480], [520, 300], [360, 400], [400, 340],
+  ];
   return Array.from({ length: 14 }, (_, i) => ({
     mint: `demo-mint-${i}`,
     inscriptionAccount: `demo-${i}`,
     sizeBytes: 4000 + ((i * 37211) % 190000),
     mime: "image/webp",
     ts: Date.now() - i * 47 * 60 * 1000,
-    demo: `https://picsum.photos/seed/etched${i}/400/400`,
+    demo: `https://picsum.photos/seed/etched${i}/${dims[i][0]}/${dims[i][1]}`,
   }));
 }
 

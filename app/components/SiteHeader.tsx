@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
 const WalletMultiButton = dynamic(
   () =>
@@ -14,6 +15,13 @@ export function SiteHeader({
 }: {
   active: "inscribe" | "wall" | "docs";
 }) {
+  const [count, setCount] = useState<number | null>(null);
+  useEffect(() => {
+    fetch("/api/gallery")
+      .then((r) => r.json())
+      .then((d) => Array.isArray(d) && setCount(d.length))
+      .catch(() => {});
+  }, []);
   return (
     <header className="site-header">
       <Link href="/" className="site-logo">
@@ -38,6 +46,13 @@ export function SiteHeader({
         >
           Docs
         </Link>
+      </nav>
+      <div className="header-right">
+        {count !== null && (
+          <span className="inscribed-counter">
+            <b>{count.toLocaleString()}</b> inscribed
+          </span>
+        )}
         <span className="wallet-wrap">
           <svg
             className="wallet-ico"
@@ -49,7 +64,6 @@ export function SiteHeader({
             strokeWidth="1.6"
           >
             <rect x="1" y="3" width="22" height="16" rx="2.5" />
-            <path d="M1 7h22" opacity="0" />
             <path d="M16 11h4" />
             <path d="M3 3.5V3a2 2 0 0 1 2-2h13" opacity="0.7" />
           </svg>
@@ -57,7 +71,7 @@ export function SiteHeader({
             <span className="wallet-label">Connect Wallet</span>
           </WalletMultiButton>
         </span>
-      </nav>
+      </div>
     </header>
   );
 }

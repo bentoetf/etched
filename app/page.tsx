@@ -431,6 +431,35 @@ export default function Home() {
         </>
       )}
       </div>
+      <section className="ritual-section">
+        <div className="ritual-label">The Ritual</div>
+        <div className="ritual-grid">
+          <div className="ritual-step">
+            <span className="ritual-num">01</span>
+            <span className="ritual-h">Drop</span>
+            <p>
+              Your image is compressed in the browser and measured. It never
+              touches a server.
+            </p>
+          </div>
+          <div className="ritual-step">
+            <span className="ritual-num">02</span>
+            <span className="ritual-h">Quote</span>
+            <p>
+              Account rent for the exact byte count, plus the service fee for
+              the tier it landed in. Shown before you sign.
+            </p>
+          </div>
+          <div className="ritual-step">
+            <span className="ritual-num">03</span>
+            <span className="ritual-h">Etch</span>
+            <p>
+              One signature, then the bytes stream on chain in 850-byte
+              chunks. You watch it get cut.
+            </p>
+          </div>
+        </div>
+      </section>
       <WallStrip />
     </div>
   );
