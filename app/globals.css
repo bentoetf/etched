@@ -11,6 +11,9 @@
   --text-muted: #9b9485;
   --text-stone: #aaa49a;
   --danger: #d97a6a;
+}
+
+body {
   --font-display: var(--font-cinzel-deco), "Cinzel Decorative", "Trajan Pro", serif;
   --font-ui: var(--font-cinzel), "Cinzel", "Times New Roman", serif;
 }
@@ -37,16 +40,19 @@ body {
   position: relative;
 }
 
-/* grain + vignette overlay */
+/* stone texture + grain overlay */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  opacity: 0.28;
-  mix-blend-mode: overlay;
+  background-image: url("/textures/stone-tile.jpg");
+  background-size: 512px 512px;
+  background-repeat: repeat;
+  opacity: 0.85;
+  mix-blend-mode: lighten;
+  filter: brightness(1.05) contrast(1.15);
 }
 
 body::after {
@@ -84,11 +90,14 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: 0 clamp(16px, 3vw, 44px);
-  background: linear-gradient(to bottom, rgba(15, 15, 14, 0.96), rgba(8, 8, 7, 0.98));
+  background:
+    linear-gradient(to bottom, rgba(15, 15, 14, 0.88), rgba(8, 8, 7, 0.94)),
+    url("/textures/stone-tile.jpg");
+  background-size: auto, 512px 512px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow:
     0 4px 0 rgba(0, 0, 0, 0.85),
-    0 12px 28px rgba(0, 0, 0, 0.9);
+    0 18px 34px rgba(0, 0, 0, 0.95);
   position: relative;
   z-index: 5;
 }
@@ -97,12 +106,14 @@ a {
   font-family: var(--font-display);
   font-size: clamp(22px, 2.4vw, 34px);
   letter-spacing: 0.08em;
-  color: #cda95d;
+  background: linear-gradient(180deg, #f5dc95 0%, #d8b66a 35%, #8a6428 60%, #e8cc84 78%, #6b4a1e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   text-decoration: none;
-  text-shadow:
-    0 1px 0 rgba(240, 217, 159, 0.5),
-    0 3px 0 #31220f,
-    0 5px 10px rgba(0, 0, 0, 0.9);
+  filter:
+    drop-shadow(0 1px 0 rgba(240, 217, 159, 0.4))
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.9));
   white-space: nowrap;
 }
 
@@ -144,6 +155,20 @@ a {
 }
 
 /* wallet-adapter button, restyled to stone/gold outline */
+.wallet-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.wallet-ico {
+  position: absolute;
+  left: 16px;
+  color: var(--gold);
+  pointer-events: none;
+  z-index: 2;
+}
+
 .wallet-adapter-button .wallet-adapter-button-start-icon {
   display: none !important;
 }
@@ -151,9 +176,9 @@ a {
 .wallet-adapter-button,
 .wallet-adapter-button-trigger {
   height: 48px !important;
-  padding: 0 22px !important;
+  padding: 0 22px 0 44px !important;
   border: 1px solid #c89d4c !important;
-  border-radius: 8px !important;
+  border-radius: 6px !important;
   background: rgba(8, 8, 7, 0.4) !important;
   color: var(--gold) !important;
   font-family: var(--font-ui) !important;
@@ -530,57 +555,210 @@ a {
 
 /* ============ The Wall (gallery) ============ */
 
+.sort-row {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: clamp(22px, 2.6vw, 34px);
+  padding: 0 16px;
+  flex-wrap: wrap;
+}
+
+.plaque-btn {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #8f887a;
+  cursor: pointer;
+  padding: 12px 30px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 40%),
+    linear-gradient(180deg, #1b1a17, #100f0d);
+  border: 2px solid #3d3a33;
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.8),
+    0 6px 12px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 2px #000;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.plaque-btn:hover {
+  color: var(--gold);
+}
+
+.plaque-btn.active {
+  color: var(--gold-bright);
+  border-color: #8a6f3a;
+  box-shadow:
+    inset 0 0 0 1px rgba(226, 199, 131, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.8),
+    0 6px 12px rgba(0, 0, 0, 0.8),
+    0 0 14px rgba(211, 173, 97, 0.12);
+}
+
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.plaque-btn.load-more {
+  padding: 15px 46px;
+  color: var(--gold);
+}
+
+.plaque-btn .chev {
+  margin-left: 8px;
+  display: inline-block;
+  transform: translateY(-2px);
+}
+
 .gallery-grid {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1560px;
   margin: clamp(24px, 3vw, 40px) auto 0;
-  padding: 0 16px;
+  padding: 0 clamp(16px, 4vw, 60px);
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 27px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 26px;
 }
 
-.gallery-card {
-  border-radius: 12px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 40%),
-    var(--stone-mid);
-  border: 2px solid var(--stone-border);
-  box-shadow:
-    inset 0 0 0 2px rgba(0, 0, 0, 0.7),
-    0 10px 18px rgba(0, 0, 0, 0.85);
-  padding: 14px;
-  font-size: 13px;
-  word-break: break-all;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.gallery-card:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    inset 0 0 0 2px rgba(0, 0, 0, 0.7),
-    0 14px 24px rgba(0, 0, 0, 0.9),
-    0 0 18px rgba(211, 173, 97, 0.12);
-}
-
-.gallery-card img {
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #2b2925;
-  background: #0a0a09;
-}
-
-.gallery-card a {
-  color: var(--gold);
+/* ornate framed card */
+.stone-card {
+  display: block;
   text-decoration: none;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 45%),
+    linear-gradient(180deg, #201e1a, #12110e);
+  border: 3px solid #050505;
+  outline: 1px solid #3d3a33;
+  padding: 12px;
+  clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.04),
+    inset 0 0 24px rgba(0, 0, 0, 0.7),
+    0 14px 22px rgba(0, 0, 0, 0.9);
+  transition: transform 0.15s, filter 0.15s;
 }
 
-.gallery-card a:hover {
-  color: var(--gold-bright);
+.stone-card:hover {
+  transform: translateY(-4px);
+  filter: brightness(1.12);
 }
+
+.stone-card-img {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #0a0a09;
+  border: 1px solid #000;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 4px 14px rgba(0, 0, 0, 0.85);
+}
+
+.stone-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.88) contrast(1.02);
+}
+
+.brass-plaque {
+  position: relative;
+  display: block;
+  margin-top: 10px;
+  padding: 8px 18px 9px;
+  text-align: center;
+  background: linear-gradient(180deg, #8a6f3d 0%, #63492a 30%, #4b3820 70%, #6d5430 100%);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 170, 0.35),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.plaque-id {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #f3dfae;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.plaque-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #d9c28c;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.rivet {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle at 35% 30%, #ffe9b8, #7a5c2e 60%, #3a2c15);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.rivet.left { left: 7px; }
+.rivet.right { right: 7px; }
+
+/* empty state: single carved frame */
+.empty-frame {
+  max-width: 520px;
+  margin: clamp(30px, 5vw, 60px) auto 0;
+  padding: 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 45%),
+    linear-gradient(180deg, #201e1a, #12110e);
+  border: 3px solid #050505;
+  outline: 1px solid #3d3a33;
+  clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px);
+  box-shadow:
+    inset 0 0 24px rgba(0, 0, 0, 0.7),
+    0 14px 22px rgba(0, 0, 0, 0.9);
+}
+
+.empty-frame-inner {
+  border: 1px solid #000;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 6px 18px rgba(0, 0, 0, 0.85);
+  background: #0a0a09;
+  padding: 56px 24px;
+  text-align: center;
+}
+
+.empty-chisel {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.4vw, 30px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #56514a;
+  text-shadow:
+    0 -1px 0 #000,
+    0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.empty-cta {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}
+
+.gallery-grid .gallery-card { display: none; }
 
 .wall-status {
   text-align: center;
@@ -602,12 +780,23 @@ a {
   .site-nav .nav-link.active::after {
     bottom: -6px;
   }
+  .wallet-ico {
+    display: none;
+  }
   .wallet-adapter-button,
   .wallet-adapter-button-trigger {
     height: 38px !important;
     padding: 0 12px !important;
     font-size: 12px !important;
     white-space: nowrap !important;
+  }
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .plaque-btn {
+    padding: 10px 18px;
+    font-size: 13px;
   }
   .ornament {
     display: none;
