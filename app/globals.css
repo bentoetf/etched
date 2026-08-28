@@ -523,6 +523,62 @@ a {
   line-height: 1.6;
 }
 
+/* ============ Docs page ============ */
+
+.docs-title {
+  font-size: clamp(44px, 6vw, 96px);
+}
+
+.docs-col {
+  gap: 0;
+  max-width: 860px;
+}
+
+.docs-slab {
+  padding: 30px 34px;
+}
+
+.docs-h {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.2vw, 28px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d3ad61;
+  text-shadow: 0 2px 3px #000;
+  margin: 0 0 14px;
+}
+
+.docs-slab p {
+  color: #c9c2b2;
+  font-size: 15px;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  margin: 0 0 12px;
+}
+
+.docs-slab p:last-child {
+  margin-bottom: 0;
+}
+
+.docs-q {
+  color: #e2d6ba !important;
+  font-weight: 600;
+  margin-top: 18px !important;
+}
+
+.docs-list {
+  margin: 0;
+  padding-left: 22px;
+  color: #c9c2b2;
+  font-size: 15px;
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+}
+
+.docs-list li::marker {
+  color: #b78d49;
+}
+
 /* ============ Wall preview strip (home) ============ */
 
 .wall-strip-section {

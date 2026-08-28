@@ -9,7 +9,11 @@ const WalletMultiButton = dynamic(
   { ssr: false }
 );
 
-export function SiteHeader({ active }: { active: "inscribe" | "wall" }) {
+export function SiteHeader({
+  active,
+}: {
+  active: "inscribe" | "wall" | "docs";
+}) {
   return (
     <header className="site-header">
       <Link href="/" className="site-logo">
@@ -27,6 +31,12 @@ export function SiteHeader({ active }: { active: "inscribe" | "wall" }) {
           className={`nav-link ${active === "wall" ? "active" : ""}`}
         >
           The Wall
+        </Link>
+        <Link
+          href="/docs"
+          className={`nav-link ${active === "docs" ? "active" : ""}`}
+        >
+          Docs
         </Link>
         <span className="wallet-wrap">
           <svg
