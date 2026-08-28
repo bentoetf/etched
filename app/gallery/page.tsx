@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { explorerAddr } from "@/lib/config";
+import { SiteHeader } from "../components/SiteHeader";
 
 interface Entry {
   mint: string;
@@ -23,20 +23,30 @@ export default function Gallery() {
   }, []);
 
   return (
-    <div className="container">
-      <div className="header">
-        <div className="logo">
-          ETCHED <span>$ETCH</span>
-        </div>
-        <div className="nav">
-          <Link href="/">inscribe</Link>
+    <div className="page">
+      <SiteHeader active="wall" />
+
+      <div className="hero">
+        <h1 className="hero-title">The Wall</h1>
+        <div className="tagline">
+          <span className="ornament left" />
+          <span className="tagline-text">
+            every meme inscribed on solana, forever
+          </span>
+          <span className="ornament right" />
         </div>
       </div>
-      <h2 style={{ marginBottom: 16 }}>Gallery</h2>
+
       {entries === null ? (
-        <p className="muted">Loading...</p>
+        <p className="muted wall-status">reading the stone...</p>
       ) : entries.length === 0 ? (
-        <p className="muted">Nothing etched yet. Be the first.</p>
+        <p className="muted wall-status">
+          Nothing etched yet.{" "}
+          <a href="/" style={{ color: "var(--gold)" }}>
+            Be the first to inscribe
+          </a>
+          .
+        </p>
       ) : (
         <div className="gallery-grid">
           {entries.map((e) => (
@@ -45,7 +55,6 @@ export default function Gallery() {
               <img
                 src={`/api/inscription/${e.inscriptionAccount}`}
                 alt="inscription"
-                style={{ width: "100%", borderRadius: 8, marginBottom: 8 }}
                 loading="lazy"
               />
               <div className="muted">
@@ -53,10 +62,7 @@ export default function Gallery() {
                 {(e.sizeBytes / 1024).toFixed(1)}kb · {e.mime}
               </div>
               <div style={{ margin: "8px 0" }}>
-                <a
-                  href={explorerAddr(e.inscriptionAccount)}
-                  target="_blank"
-                >
+                <a href={explorerAddr(e.inscriptionAccount)} target="_blank">
                   inscription ↗
                 </a>
               </div>
@@ -69,6 +75,7 @@ export default function Gallery() {
           ))}
         </div>
       )}
+      <div style={{ height: 72 }} />
     </div>
   );
 }

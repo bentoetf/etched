@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
-import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SiteHeader } from "./components/SiteHeader";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
@@ -16,14 +15,6 @@ import {
   InscribeProgress,
   InscribeResult,
 } from "@/lib/inscribe";
-
-const WalletMultiButton = dynamic(
-  () =>
-    import("@solana/wallet-adapter-react-ui").then(
-      (m) => m.WalletMultiButton
-    ),
-  { ssr: false }
-);
 
 export default function Home() {
   const wallet = useWallet();
@@ -148,19 +139,23 @@ export default function Home() {
     : 0;
 
   return (
-    <div className="container">
-      <div className="header">
-        <div className="logo">
-          ETCHED <span>$ETCH</span>
-        </div>
-        <div className="nav">
-          <Link href="/gallery">gallery</Link>
-          <WalletMultiButton />
+    <div className="page">
+      <SiteHeader active="inscribe" />
+
+      <div className="hero">
+        <h1 className="hero-title">Etched</h1>
+        <div className="tagline">
+          <span className="ornament left" />
+          <span className="tagline-text">
+            your jpeg lives on chain. forever.
+          </span>
+          <span className="ornament right" />
         </div>
       </div>
 
+      <div className="main-col">
       {result ? (
-        <div className="panel success">
+        <div className="slab success">
           <h2>Etched forever.</h2>
           <p className="muted">
             Your image now lives inside a Solana account. No IPFS, no server,
@@ -216,7 +211,7 @@ export default function Home() {
         </div>
       ) : (
         <>
-          <div className="panel">
+          <div className="slab">
             {!compressed ? (
               <div
                 className={`dropzone ${drag ? "drag" : ""}`}
@@ -228,9 +223,26 @@ export default function Home() {
                 onDragLeave={() => setDrag(false)}
                 onDrop={onDrop}
               >
-                {compressing
-                  ? "Compressing..."
-                  : "Drop a meme here, or click to pick one. It gets compressed and etched into a Solana account forever. No IPFS."}
+                <div className="dz-icon">
+                  <svg
+                    width="52"
+                    height="52"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#8d8a81"
+                    strokeWidth="1.4"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="9" cy="9" r="2" />
+                    <path d="M3 17l5-5 4 4 3-3 6 6" />
+                  </svg>
+                </div>
+                <div className="dz-title">
+                  {compressing ? "compressing..." : "drop your meme"}
+                </div>
+                <div className="dz-hint">
+                  jpg / jpeg / png • auto-compressed • max 200kb on chain
+                </div>
                 <input
                   ref={fileInput}
                   type="file"
@@ -267,9 +279,34 @@ export default function Home() {
                   </div>
                 </div>
                 {quote && !quoting && (
-                  <div className="quote-breakdown muted" style={{ fontSize: 12, textAlign: "center", marginBottom: 12 }}>
-                    on-chain rent {solStr(quote.rentLamports + quote.overheadLamports)} SOL
-                    {" + "}service fee {solStr(quote.serviceFeeLamports)} SOL
+                  <div className="cost-card">
+                    <div className="sol-medallion">
+                      <svg width="38" height="32" viewBox="0 0 36 30" fill="none">
+                        <path d="M6 2h26l-5 6H1l5-6z" fill="#c49a4a" />
+                        <path d="M6 12h26l-5 6H1l5-6z" transform="scale(-1,1) translate(-33,0)" fill="#c49a4a" />
+                        <path d="M6 22h26l-5 6H1l5-6z" fill="#c49a4a" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="cost-main">
+                        {fmtKb(compressed.bytes.length)} image, total{" "}
+                        <span className="gold">
+                          {solStr(quote.totalLamports)} SOL
+                        </span>
+                      </div>
+                      <div className="cost-rows">
+                        <span>
+                          on-chain rent ({fmtKb(compressed.bytes.length)})
+                        </span>
+                        <span className="val">
+                          {solStr(quote.rentLamports + quote.overheadLamports)} SOL
+                        </span>
+                        <span>service fee</span>
+                        <span className="val">
+                          {solStr(quote.serviceFeeLamports)} SOL
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 )}
                 {progress ? (
@@ -325,6 +362,7 @@ export default function Home() {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 }
