@@ -16,6 +16,74 @@ import {
   InscribeResult,
 } from "@/lib/inscribe";
 
+interface WallEntry {
+  mint: string;
+  inscriptionAccount: string;
+  sizeBytes: number;
+  ts: number;
+}
+
+function WallStrip() {
+  const [entries, setEntries] = useState<WallEntry[] | null>(null);
+  useEffect(() => {
+    fetch("/api/gallery")
+      .then((r) => r.json())
+      .then(setEntries)
+      .catch(() => setEntries([]));
+  }, []);
+  const items = (entries ?? []).slice(0, 7);
+  return (
+    <div className="wall-strip-section">
+      <div className="wall-divider">
+        <span className="wall-divider-line" />
+        <a href="/gallery" className="wall-divider-label">
+          The Wall
+        </a>
+        <span className="wall-divider-line" />
+      </div>
+      <div className="wall-strip">
+        {items.length > 0
+          ? items.map((e, i) => (
+              <a
+                className="strip-card"
+                key={e.inscriptionAccount}
+                href="/gallery"
+              >
+                <span className="strip-num">
+                  #{String(i + 1).padStart(6, "0")}
+                </span>
+                <span className="strip-img">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/api/inscription/${e.inscriptionAccount}`}
+                    alt="inscription"
+                    loading="lazy"
+                  />
+                </span>
+                <span className="strip-kb">
+                  {(e.sizeBytes / 1024).toFixed(0)} KB
+                </span>
+              </a>
+            ))
+          : Array.from({ length: 7 }, (_, i) => (
+              <a className="strip-card empty" key={i} href="/gallery">
+                <span className="strip-num">
+                  #{String(i + 1).padStart(6, "0")}
+                </span>
+                <span className="strip-img vacant">
+                  <span className="vacant-mark">?</span>
+                </span>
+                <span className="strip-kb">yours</span>
+              </a>
+            ))}
+        <a href="/gallery" className="strip-arrow" aria-label="open the wall">
+          ›
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const wallet = useWallet();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -363,6 +431,7 @@ export default function Home() {
         </>
       )}
       </div>
+      <WallStrip />
     </div>
   );
 }
